@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Customers</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>   
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        background-color: #ffffff;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: row; /* Align items side by side */
+        width: 100%;
+        margin-top: 60px; /* Provide space for the title */
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 50%; /* Each container takes up half the width */
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: repeat(4, 2fr); /* Set to one column */
+        gap: 10px; /* Spacing between grid items */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin-bottom: 20px; /* Provides spacing before the table */
+        background: white;
+        box-shadow: 0px 5px 2px 2px rgba(0.1,0.1,0.1,0.1), 5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1), 0px -5px 2px 2px rgba(0.1,0.1,0.1,0.1), -5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1);
+        width: 500px; /* Adjust width as needed */
+    }
+
+    button[type="submit"], button, a.button-link {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        grid-column: span 4;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #back:hover, #back:focus, button[type="submit"]:hover, button[type="submit"]:focus {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px);
+    }
+
+    #back{
+        width: 15%;
+    }
+    </style>
+
+</head>
+<body>
+    <h1>My Customers</h1>
+    <button id="back" type="button" onclick="window.location.href='/back';">Back</button>
+    <div class="content">
+    <div class="container">
+        <form action="/agent_customer" method="post">
+            <input type="hidden" name="form_id" value="form1">
+            <label for="start_date1">Start Date:</label>
+            <input type="date" id="start_date1" name="start_date1">
+            <label for="end_date1">End Date:</label>
+            <input type="date" id="end_date1" name="end_date1">
+            <button type="submit">Submit</button>
+        </form>
+        <canvas id="customer_chart1"></canvas>
+        <script>
+            // Parse the JSON data passed from the backend
+            var chartData1 = JSON.parse('{{ chart_data1 | safe }}');
+
+            // Get the canvas element
+            var ctx = document.getElementById('customer_chart1').getContext('2d');
+
+            // Create the chart
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData1,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    </div>
+    <div class="container">
+        <form action="/agent_customer" method="post">
+            <input type="hidden" name="form_id" value="form2">
+            <label for="start_date2">Start Date:</label>
+            <input type="date" id="start_date2" name="start_date2">
+            <label for="end_date2">End Date:</label>
+            <input type="date" id="end_date2" name="end_date2">
+            <button type="submit">Submit</button>
+        </form>
+        <canvas id="customer_chart2"></canvas>
+        <script>
+            // Parse the JSON data passed from the backend
+            var chartData2 = JSON.parse('{{ chart_data2 | safe }}');
+    
+            // Get the canvas element
+            var ctx = document.getElementById('customer_chart2').getContext('2d');
+    
+            // Create the chart
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData2,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+        </div>
+    </div>
+</body>
+</html>

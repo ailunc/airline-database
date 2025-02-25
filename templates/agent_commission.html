@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Commission</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>   
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        background-color: #ffffff;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: repeat(4, 2fr); /* Set to one column */
+        gap: 10px; /* Spacing between grid items */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin-bottom: 20px; /* Provides spacing before the table */
+        background: white;
+        box-shadow: 0px 5px 2px 2px rgba(0.1,0.1,0.1,0.1), 5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1), 0px -5px 2px 2px rgba(0.1,0.1,0.1,0.1), -5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1);
+        width: 500px; /* Adjust width as needed */
+    }
+
+    button[type="submit"], #back, a.button-link {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        transition: background-color 0.3s, transform 0.2s;
+        grid-column: span 4;
+    }
+
+    #back:hover, #back:focus, button[type="submit"]:hover, button[type="submit"]:focus {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px);
+    }
+
+    .card {
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        background: linear-gradient(to bottom right, #ffffff, #f1f1f1);
+        border-radius: 10px;
+        margin: 10px;
+        padding: 20px;
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    }
+
+    .container {
+        padding: 16px;
+    }
+
+    </style>
+
+</head>
+<body>
+    <h1>My Commission</h1>
+    <form action="/agent_commission" method="post">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date">
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date">
+        <button type="submit">Submit</button>
+        <button id = 'back' type="button" onclick="window.location.href='/back';">Back</button>
+    </form>
+    <div class="card">
+        <div class="container">
+            <h4><b>Total Commission</b></h4>
+            <p>$ {{ total_commission }}</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="container">
+            <h4><b>Average Commission</b></h4>
+            <p>$ {{ average_commission }}</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="container">
+            <h4><b>Total Tickets Sold</b></h4>
+            <p>{{ total_ticket }} tickets</p>
+        </div>
+    </div>
+</body>
+</html>

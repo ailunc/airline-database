@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Homepage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffffff;
+        }
+
+        header {
+            width: 600px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0px 5px 2px 2px rgba(0,0,0,0.1);
+        }
+
+        #flights, #buy, #spend {
+            background-color: #007BFF;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            margin-top: 10px;
+            width: 28%;
+            border-radius: 4px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            width: 90%; /* Matching width of input group in index.html */
+        }
+
+        .button-container button {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            padding: 12px 24px; /* Larger padding for better touch targets */
+            margin: 5px; /* Adds space between buttons */
+            width: auto; /* Auto width based on content */
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+        }
+
+        .button-container button:hover, .button-container button:focus {
+            background: linear-gradient(145deg, #0056b3, #003875);
+            transform: translateY(-2px); /* Slight lift */
+            outline: none; /* Removes focus outline and replaces with custom styles if needed */
+        }
+
+        .button-container button:focus {
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.5); /* Adds focus outline for accessibility */
+        }
+
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        #logout-button {
+            background: linear-gradient(145deg, #ff4e50, #ff0a0a); /* Red gradient for logout */
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            padding: 12px 24px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+            width: auto; /* Adjust width to content */
+        }
+
+        #logout-button:hover, #logout-button:focus {
+            background: linear-gradient(145deg, #d60007, #900);
+            transform: translateY(-2px);
+            outline: none;
+        }
+
+        #logout-button:focus {
+            box-shadow: 0 0 0 3px rgba(255,10,10,0.5);
+        }
+
+        table {
+            width: 103.5%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Set to one column */
+            gap: 10px; /* Spacing between grid items */
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 20px; /* Provides spacing before the table */
+            background: white;
+            box-shadow: 0px 5px 2px 2px rgba(0.1,0.1,0.1,0.1), 5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1), 0px -5px 2px 2px rgba(0.1,0.1,0.1,0.1), -5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1);
+            width: 100%; /* Adjust width as needed */
+        }
+
+        form label, form input[type="date"], form select {
+            display: block; /* Makes label and input take the full width of their grid cell */
+            width: 100%; /* Ensures full width usage inside the grid cell */
+            margin-bottom: 5px; /* Consistent margin at the bottom */
+        }
+
+        /* Last child within each grid cell doesn't have a bottom margin for alignment */
+        form label:last-child, form input[type="date"]:last-child, form select:last-child {
+            margin-bottom: 0;
+        }
+
+        input[type="submit"] {
+            grid-column: span auto-fill; /* Makes submit button span across available space */
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            padding: 12px 24px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%; /* Full width */
+        }
+
+        input[type="submit"]:hover, input[type="submit"]:focus {
+            background: linear-gradient(145deg, #0056b3, #003875);
+            transform: translateY(-2px);
+        }
+
+        input[type="submit"]:focus {
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.5);
+        }
+
+        h2{
+          text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{ customer_name }}!</h1><br>
+        <button id="logout-button" onclick="window.location.href='/logout';">Logout</button>
+    </header>
+    <div class="button-container">
+        <button id="flights" onclick="window.location.href='/public_upcoming_flights';">Search Flights</button>
+        <button id="buy" onclick="window.location.href='/customer_purchase';">Buy Tickets</button>
+        <button id="spend" onclick="window.location.href='/customer_spending';">My Spending</button>
+    </div>
+    <script src="scripts.js">window.onload = function() {
+        fetch('/api/user-info')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('customer_name').textContent = data.username;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    </script>
+    <!-- Place this section within the body where you want the table to appear -->
+<div>
+    <h2>My Flights</h2>
+
+    <form action="/search_customer_home" method="post">
+        <div>
+          <label for="departure_airport">Departure Airport:</label>
+          <select id="departure_airport" name="departure_airport">
+            <option value="">Select an airport</option>
+            {% for airport in airports %}
+            <option value="{{ airport[0] }}">{{ airport[0] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label for="arrival_airport">Arrival Airport:</label>
+          <select id="arrival_airport" name="arrival_airport">
+            <option value="">Select an airport</option>
+            {% for airport in airports %}
+            <option value="{{ airport[1] }}">{{ airport[1] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label for="departure_time">Departure Date:</label>
+          <input type="date" id="departure_time" name="departure_time">
+        </div>
+        <input type="submit" value="Search">
+      </form>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Flight Number</th>
+          <th>Departure Time</th>
+          <th>Arrival Time</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Airline Name</th>
+          <th>Airplane ID</th>
+          <th>Departure Airport</th>
+          <th>Arrival Airport</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for flight in flights %}
+        <tr>
+            <td>{{ flight[0] }}</td>
+            <td>{{ flight[1].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ flight[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ flight[3] }}</td>
+            <td>{{ flight[4] }}</td>
+            <td>{{ flight[5] }}</td>
+            <td>{{ flight[6] }}</td>
+            <td>{{ flight[7] }}</td>
+            <td>{{ flight[8] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+</body>
+</html>

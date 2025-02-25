@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Homepage - Buy Tickets</title>
+    <style>      
+    
+    @keyframes shake-twice {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    .shake-twice-animation {
+        animation-name: shake-twice;
+        animation-duration: 0.2s; /* 动画持续时间 */
+        animation-timing-function: ease-in-out; /* 动画速度曲线 */
+    }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        background-color: #ffffff;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    table {
+        width: 80%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #ccc;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* Set to one column */
+        gap: 10px; /* Spacing between grid items */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin-bottom: 20px; /* Provides spacing before the table */
+        background: white;
+        box-shadow: 0px 5px 2px 2px rgba(0.1,0.1,0.1,0.1), 5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1), 0px -5px 2px 2px rgba(0.1,0.1,0.1,0.1), -5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1);
+        width: 500px; /* Adjust width as needed */
+    }
+
+    input[type="submit"], #back, a.button-link {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        transition: background-color 0.3s, transform 0.2s;
+        grid-column: span 3;
+    }
+
+    #back:hover, #back:focus, input[type="submit"]:hover, input[type="submit"]:focus {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px);
+    }
+
+    .modal-overlay {
+        position:absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        visibility: hidden; /* Hide by default */
+        opacity: 0;
+        transition: visibility 0s, opacity 0.3s ease-in-out;
+    }
+
+    .modal-content {
+        position:absolute;
+        left:30%;
+        top:30%;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        width: 40%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center vertically */
+        align-items: center;
+    }
+
+    .modal-overlay.active {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    input[type="text"]{
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 96%;
+    }
+
+    #cus_search, #close {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        margin-top: 10px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #cus_search:hover, #cus_search:focus, #close:hover, #close:focus {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px);
+    }
+
+    #purchase-button {
+        background: linear-gradient(145deg, #00ff4c, #00b31b);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #purchase-button:hover, #purchase-button:focus {
+        background: linear-gradient(145deg, #00b339, #007533);
+        transform: translateY(-2px);
+    }
+
+    .purchased-button {
+        background: linear-gradient(145deg, #ff0000, #b30000);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .purchased-button:hover, .purchased-button:focus {
+        background: linear-gradient(145deg, #b30000, #750000);
+    }
+
+    </style>
+    <title>Available Flights</title>
+</head>
+<body>
+    <header class="text-center">
+        <h1>Available Flights</h1>
+    </header>
+
+    <form action="/search_agent_purchase" method="post">
+        <div>
+            <label for="departure_airport">Departure Airport:</label>
+            <select id="departure_airport" name="departure_airport">
+                <option value="">Select an airport</option>
+                {% for airport in airports %}
+                <option value="{{ airport[0] }}">{{ airport[0] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="arrival_airport">Arrival Airport:</label>
+            <select id="arrival_airport" name="arrival_airport">
+                <option value="">Select an airport</option>
+                {% for airport in airports %}
+                <option value="{{ airport[1] }}">{{ airport[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="departure_time">Departure Date:</label>
+            <input type="date" id="departure_time" name="departure_time">
+        </div>
+        <input id="search" type="submit" value="Search">
+        <button id="back" type="button" onclick="window.location.href='/back';">Back</button>
+    </form>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Flight Number</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Airline Name</th>
+                <th>Airplane ID</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in flights %}
+            <tr>
+                <td>{{ flight[0] }}</td>
+                <td>{{ flight[1].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ flight[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ flight[3] }}</td>
+                <td>{{ flight[4] }}</td>
+                <td>{{ flight[5] }}</td>
+                <td>{{ flight[6] }}</td>
+                <td>{{ flight[7] }}</td>
+                <td>{{ flight[8] }}</td>
+                <td>
+                    {% if flight[0] | check_if_full() %}
+                    <button class="purchased-button" >LIMIT</button>
+                    {% else %}
+                    <button id="purchase-button" onclick="searchEmail('{{ flight[0] }}')">Purchase</button>
+                    {% endif %}
+                    <div id="emailModal{{ flight[0] }}" style="display:none;" class="modal-overlay">
+                        <div class="modal-content">
+                            <input type="text" id="emailInput{{ flight[0] }}" placeholder="Enter customer's email" />
+                            <button id="cus_search" onclick="searchEmail('{{ flight[0] }}')">Search</button>
+                            <div id="emailSuggestions{{ flight[0] }}"></div>
+                            <button id="close" onclick="closeModal('{{ flight[0] }}')">Close</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Modal for Email Entry -->
+    <script>
+        let currentFlightNum = null;
+            // Function to search emails based on input
+        function searchEmail(flightNum) {
+            currentFlightNum = flightNum;
+            document.getElementById('emailModal' + flightNum).classList.add('active');
+            document.getElementById('emailModal' + flightNum).style.display = 'block';
+            var input = document.getElementById('emailInput' + flightNum).value;
+            fetch(`/agent_search_emails?email=${input}&flightNum=${flightNum}`)
+                .then(response => response.json())
+                .then(data => {
+                    const suggestions = document.getElementById('emailSuggestions' + flightNum);
+                    suggestions.innerHTML = '';
+                    data.forEach(email => {
+                        const option = document.createElement('button');
+                        option.innerHTML = email;
+                        option.onclick = () => selectEmail(email, currentFlightNum, suggestions);
+                        suggestions.appendChild(option);
+                    });
+                });
+        }
+    
+        // Function to select an email and check purchase history
+        function selectEmail(email, flightNum, suggestions) {
+            fetch(`/agent_check_purchase?email=${email}&flightNum=${flightNum}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        alert('Ticket already exists for this customer.');
+                    } 
+                    else {
+                        fetch(`/agent_make_purchase?email=${email}&flightNum=${flightNum}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ customer_email: email, flight_num: flightNum })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Purchase success');
+                                    const suggestions = document.getElementById('emailSuggestions' + flightNum);
+                                    if (suggestions) {
+                                        suggestions.innerHTML = ''; // Clear the content
+                                    }
+                                    document.getElementById('emailModal' + flightNum).style.display = 'none';
+                                    location.reload();
+                                } else {
+                                    alert('Failed to make a purchase');
+                                }
+                            });
+                    }
+                });
+        }
+    
+        function closeModal(flightNum) {
+            document.getElementById('emailModal' + flightNum).classList.remove('active');
+            document.getElementById('emailModal' + flightNum).style.display = 'none';
+            document.getElementById('emailInput' + flightNum).value = null
+            currentFlightNum = null;
+        }
+
+        document.querySelectorAll('.purchased-button').forEach(button => {
+        button.addEventListener('mouseover', function() {
+            this.classList.add('shake-animation');
+            this.addEventListener('animationend', () => {
+            this.classList.remove('shake-animation');
+            });
+        });
+
+        button.addEventListener('mousedown', function() {
+            this.classList.add('shake-twice-animation');
+            this.addEventListener('animationend', () => {
+            this.classList.remove('shake-twice-animation');
+            });
+        });
+        });
+    </script>
+        
+</body>   
+</html>

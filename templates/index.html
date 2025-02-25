@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffffff; /* Light grey background */
+        }
+
+        #logo img {
+            width: 200px;
+            margin-bottom: 20px; /* Increased space below the logo */
+        }
+
+        .input-group {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 5px 2px 2px rgba(0.1,0.1,0.1,0.1) ,5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1),0px -5px 2px 2px rgba(0.1,0.1,0.1,0.1),-5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1);
+            width: 300px; /* Increased width */
+        }
+
+        input[type="text"], input[type="password"], input[type="submit"],button {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ffffff;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"], #register {
+            background-color: #007BFF; /* Bootstrap primary color */
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        #register {
+            margin-top: 0px; /* Reduced margin to bring closer to the login button */
+        }
+
+        .button-group {
+            margin-top: 10px;
+            display: block; /* Stack buttons vertically */
+        }
+
+        button {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        #view-upcoming-flights, #view-flights-status {
+            background-color: #28a7a3; /* Green color for better distinction */
+            color: white;
+        }
+
+        /* 按钮悬停效果 */
+        input[type="submit"]:hover, #register:hover {
+            background-color: #0056b3; /* 深蓝色 */
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        #view-upcoming-flights:hover, #view-flights-status:hover {
+            background-color: #00837a; /* 深蓝色 */
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        /* 表单输入框焦点效果 */
+        input[type="text"]:focus, input[type="password"]:focus {
+            border: 2px solid #007BFF;
+            box-shadow: 0 0 8px #007BFF;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* 按钮点击动效 */
+        button:active, input[type="submit"]:active {
+            transform: scale(0.95);
+            transition: transform 0.1s ease;
+        }
+
+
+    </style>
+</head>
+<body>
+    {% if message %}
+        <script>
+            alert("{{ message }}");
+        </script>
+    {% endif %}
+    <div id="logo">
+        <img src="/static/logo.png" alt="Logo">
+    </div>
+
+    <div class="input-group">
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="Username" required/>
+            <input type="password" name="password" placeholder="Password" required/>
+            <input type="submit" value="Login"/>
+        </form>
+        <div class="button-group">
+            <button id="register">Register</button>
+            <br>
+            <button id="view-upcoming-flights">View Upcoming Flights</button>
+            <br>
+            <button id="view-flights-status">View Flights Status</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('view-upcoming-flights').addEventListener('click', function() {
+            window.location.href = '/public_upcoming_flights'; // Assuming your flights page is at this route
+        });
+        document.getElementById('view-flights-status').addEventListener('click', function() {
+            window.location.href = '/public_flights_status'; // Assuming your flights page is at this route
+        });
+        document.getElementById('register').addEventListener('click', function() {
+            window.location.href = '/register_page'; // Assuming your flights page is at this route
+        });
+    </script>
+</body>
+</html>

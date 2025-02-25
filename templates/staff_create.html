@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Flight</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 350px;
+            display: block;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+        }
+        input[type="submit"], button {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            font-weight: bold;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        input[type="submit"]:hover, button:hover {
+            background: linear-gradient(145deg, #0056b3, #003875);
+            transform: translateY(-2px);
+        }
+        input, select {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    {% if message %}
+        <script>
+            alert("{{ message }}");
+        </script>
+    {% endif %}
+    <h1>Create Flight</h1>
+    <form action="/staff_create" method="POST">
+        <label for="flight_num">Flight Number:</label>
+        <input type="text" id="flight_num" name="flight_num" required>
+
+        <label for="depart_time">Departure Time:</label>
+        <input type="datetime-local" id="depart_time" name="depart_time" required>
+
+        <label for="arrive_time">Arrival Time:</label>
+        <input type="datetime-local" id="arrive_time" name="arrive_time" required>
+
+        <label for="price">Price:</label>
+        <input type="text" id="price" name="price" required>
+
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+            <option value="upcoming">Upcoming</option>
+            <option value="in_progress">In Progress</option>
+            <option value="delayed">Delayed</option>
+        </select>
+
+        <div>
+            <label for="plane_id">Plane:</label>
+            <select id="plane_id" name="plane_id">
+              <option value="">Select an Airplane</option>
+              {% for plane in planes %}
+              <option value="{{ plane[0] }}">{{ plane[0] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+        <div>
+            <label for="depart_airport">Departure Airport:</label>
+            <select id="depart_airport" name="depart_airport">
+              <option value="">Select an airport</option>
+              {% for airport in airports %}
+              <option value="{{ airport[0] }}">{{ airport[0] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label for="arrive_airport">Arrival Airport:</label>
+            <select id="arrive_airport" name="arrive_airport">
+              <option value="">Select an airport</option>
+              {% for airport in airports %}
+              <option value="{{ airport[0] }}">{{ airport[0] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+        <input type="submit" value="Create Flight">
+        <button type="button" onclick="window.location.href='/back';">Back</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Spending</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>   
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        background-color: #ffffff;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: repeat(4, 2fr); /* Set to one column */
+        gap: 10px; /* Spacing between grid items */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin-bottom: 20px; /* Provides spacing before the table */
+        background: white;
+        box-shadow: 0px 5px 2px 2px rgba(0.1,0.1,0.1,0.1), 5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1), 0px -5px 2px 2px rgba(0.1,0.1,0.1,0.1), -5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1);
+        width: 500px; /* Adjust width as needed */
+    }
+
+    input[type="submit"], button, a.button-link {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        grid-column: span 4;
+        transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+    }
+
+    button:hover, button:focus {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px); /* Slight lift */
+        outline: none; /* Removes focus outline and replaces with custom styles if needed */
+    }
+
+    input[type="submit"]:hover, input[type="submit"]:focus {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px);
+    }
+    
+    </style>
+
+</head>
+<body>
+    <h1>My Spending</h1>
+    <form action="/customer_spending" method="post">
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date">
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date">
+        <button type="submit">Submit</button>
+        <button type="button" onclick="window.location.href='/back';">Back</button>
+    </form>
+    <h2>Total Spending: <span id="total_spending">{{ total_spent }}</span></h2>
+    <canvas id="spending_chart"></canvas>
+    <script>
+        // Parse the JSON data passed from the backend
+        var chartData = JSON.parse('{{ chart_data | safe }}');
+
+        // Get the canvas element
+        var ctx = document.getElementById('spending_chart').getContext('2d');
+
+        // Create the chart
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+</html>

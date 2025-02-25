@@ -1,0 +1,164 @@
+<html>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flashes">
+         {% for message in messages %}
+          <div class="message_flash">{{ message }}</div>
+         {% endfor %}
+     </ul>
+   {% endif %}
+   {% endwith %}
+<head>
+    <title>Registration</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        form {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 5px 2px 2px rgba(0.1,0.1,0.1,0.1) ,5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1),0px -5px 2px 2px rgba(0.1,0.1,0.1,0.1),-5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1);
+            width: 300px; /* Match the width in index.html */
+            display: block;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        input[type="submit"], button {
+            background-color: #007BFF;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        input[type="submit"]:hover, button:hover {
+            background-color: #0056b3;
+        }
+        a.button-link {
+            text-decoration: none;
+            display: inline-block;
+        }
+        input, select {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    {% if message %}
+        <script>
+            alert("{{ message }}");
+        </script>
+    {% endif %}
+    <h1>Registration</h1>
+    <form action="/register" method="POST" novalidate>
+        <label for="role">Register as:</label>
+        <select name="role" id="role" onchange="showForm(this.value)">
+            <option value="">Select Role</option>
+            <option value="customer">Customer</option>
+            <option value="agent">Booking Agent</option>
+            <option value="staff">Airline Staff</option>
+        </select>
+
+        <div id="customerForm" style="display:none;">
+            <input type="email" name="customer_email" placeholder="Email"/><br>
+            <input type="text" name="customer_name" placeholder="Full Name"  /><br>
+            <input type="password" name="customer_password" placeholder="Password" /><br>
+            <input type="password" name="customer_password_confirm" placeholder="Confirm Password"  /><br>
+            <input type="text" name="building_number" placeholder="Building Number"  /><br>
+            <input type="text" name="street" placeholder="Street"  /><br>
+            <input type="text" name="city" placeholder="City"  /><br>
+            <input type="text" name="state" placeholder="State"  /><br>
+            <input type="text" name="phone_number" placeholder="Phone Number"  /><br>
+            <input type="text" name="passport_number" placeholder="Passport Number"  /><br>
+            <input type="text" id = 'passport_expiration' name="passport_expiration" placeholder="Passport Expiration Date"  /><br>
+            <input type="text" name="passport_country" placeholder="Passport Country"  /><br>
+            <input type="text" id = 'customer_date_of_birth' name="customer_date_of_birth" placeholder="Date of Birth"  /><br>
+        </div>
+
+        <div id="agentForm" style="display:none;">
+            <input type="email" name="agent_email" placeholder="Email"  /><br>
+            <input type="password" name="agent_password" placeholder="Password"  /><br>
+            <input type="password" name="agent_password_confirm" placeholder="Confirm Password"  /><br>
+        </div>
+
+        <div id="staffForm" style="display:none;">
+            <input type="text" name="staff_username" placeholder="Email"  /><br>
+            <input type="password" name="staff_password" placeholder="Password"  /><br>
+            <input type="password" name="staff_password_confirm" placeholder="Confirm Password"  /><br>
+            <input type="text" name="first_name" placeholder="First Name"  /><br>
+            <input type="text" name="last_name" placeholder="Last Name"  /><br>
+            <input type="text" id='staff_date_of_birth' name="staff_date_of_birth" placeholder="Date of Birth"  /><br>
+            <input type="text" name="name_airline" placeholder="Airline Name"  /><br>
+        </div>
+        <br>
+        <input type="submit" value="Register">
+        <br>
+        <button type="button" onclick="window.location.href='/';">Homepage</button>
+    </form>
+
+    <script>
+        function showForm(role) {
+            document.getElementById('customerForm').style.display = (role == 'customer') ? 'block' : 'none';
+            document.getElementById('agentForm').style.display = (role == 'agent') ? 'block' : 'none';
+            document.getElementById('staffForm').style.display = (role == 'staff') ? 'block' : 'none';
+        }
+
+        document.getElementById('passport_expiration').addEventListener('focus', function() {
+            this.type = 'date';
+            this.style.color = 'black';
+        });
+        document.getElementById('passport_expiration').addEventListener('blur', function() {
+            if(this.value == '') {
+                this.type = 'text';
+                this.style.color = 'gray';
+                this.value = 'Passport Expiration Date';
+            }
+        });
+
+        document.getElementById('customer_date_of_birth').addEventListener('focus', function() {
+            this.type = 'date';
+            this.style.color = 'black';
+        });
+        document.getElementById('customer_date_of_birth').addEventListener('blur', function() {
+            if(this.value == '') {
+                this.type = 'text';
+                this.style.color = 'gray';
+                this.value = 'Date of Birth';
+            }
+        });
+
+        document.getElementById('staff_date_of_birth').addEventListener('focus', function() {
+            this.type = 'date';
+            this.style.color = 'black';
+        });
+        document.getElementById('staff_date_of_birth').addEventListener('blur', function() {
+            if(this.value == '') {
+                this.type = 'text';
+                this.style.color = 'gray';
+                this.value = 'Date of Birth';
+            }
+        });
+
+    </script>
+</body>
+</html>

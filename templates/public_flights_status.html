@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      background-color: #ffffff;
+    }
+    .text-center {
+      text-align: center;
+    }
+    table {
+      width: 80%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border: 1px solid #ccc;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    form {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* Set to one column */
+      gap: 10px; /* Spacing between grid items */
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 20px; /* Provides spacing before the table */
+      background: white;
+      box-shadow: 0px 5px 2px 2px rgba(0.1,0.1,0.1,0.1), 5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1), 0px -5px 2px 2px rgba(0.1,0.1,0.1,0.1), -5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1);
+      width: 500px; /* Adjust width as needed */
+    }
+    button, input[type="submit"], a.button-link {
+      background: linear-gradient(145deg, #007bff, #0056b3);
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 4px;
+      width: 100%;
+      grid-column: span 3;
+      transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+    }
+
+    button:hover, button:focus {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px); /* Slight lift */
+        outline: none; /* Removes focus outline and replaces with custom styles if needed */
+    }
+
+    input[type="submit"]:hover, input[type="submit"]:focus {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px);
+    }
+  </style>
+  <title>Public Flights Status</title>
+</head>
+<body>
+  <header class="text-center">
+    <h2>Public Flights Status</h2>
+  </header>
+
+  {% if error %}
+    <p class="error" style="color: red;"><strong>Error:</strong> {{ error }}</p>
+  {% endif %}
+
+  <form action="/search_public_flights_status" method="post">
+    <div>
+      <label for="flight_number">Flight Number:</label>
+      <input type="text" id="flight_number" name="flight_number">
+    </div>
+    <div>
+      <label for="departure_time">Departure Date:</label>
+      <input type="date" id="departure_time" name="departure_time">
+    </div>
+    <div>
+      <label for="arrival_time">Arrival Date:</label>
+      <input type="date" id="arrival_time" name="arrival_time">
+    </div>
+    <input type="submit" value="Search">
+    <button type="button" onclick="window.location.href='/back';">Back</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Flight Number</th>
+        <th>Departure Time</th>
+        <th>Arrival Time</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Airline Name</th>
+        <th>Airplane ID</th>
+        <th>Departure Airport</th>
+        <th>Arrival Airport</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for flight in flights %}
+      <tr>
+        <td>{{ flight[0] }}</td>
+        <td>{{ flight[1].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{{ flight[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>{{ flight[3] }}</td>
+        <td>{{ flight[4] }}</td>
+        <td>{{ flight[5] }}</td>
+        <td>{{ flight[6] }}</td>
+        <td>{{ flight[7] }}</td>
+        <td>{{ flight[8] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+</html>

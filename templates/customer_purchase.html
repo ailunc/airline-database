@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Homepage - Buy Tickets</title>
+    <style>        
+
+    @keyframes shake-twice {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    .shake-twice-animation {
+    animation-name: shake-twice;
+    animation-duration: 0.2s; /* 动画持续时间 */
+    animation-timing-function: ease-in-out; /* 动画速度曲线 */
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        background-color: #ffffff;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    table {
+        width: 80%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #ccc;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* Set to one column */
+        gap: 10px; /* Spacing between grid items */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin-bottom: 20px; /* Provides spacing before the table */
+        background: white;
+        box-shadow: 0px 5px 2px 2px rgba(0.1,0.1,0.1,0.1), 5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1), 0px -5px 2px 2px rgba(0.1,0.1,0.1,0.1), -5px 0px 2px 2px rgba(0.1,0.1,0.1,0.1);
+        width: 500px; /* Adjust width as needed */
+    }
+
+    .purchased-button {
+        background: linear-gradient(145deg, #ff0000, #b30000);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .purchased-button:hover, .purchased-button:focus {
+        background: linear-gradient(145deg, #b30000, #750000);
+    }
+
+    #purchase-button {
+        background: linear-gradient(145deg, #00ff4c, #00b31b);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #purchase-button:hover, #purchase-button:focus {
+        background: linear-gradient(145deg, #00b339, #007533);
+        transform: translateY(-2px);
+    }
+
+    input[type="submit"], #back, a.button-link {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 4px;
+        width: 100%;
+        transition: background-color 0.3s, transform 0.2s;
+        grid-column: span 3;
+    }
+
+    #back:hover, #back:focus, input[type="submit"]:hover, input[type="submit"]:focus {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px);
+    }
+
+    </style>
+    <title>Available Flights</title>
+</head>
+<body>
+    <header class="text-center">
+        <h1>Available Flights</h1>
+    </header>
+
+    <form action="/search_customer_purchase" method="post">
+        <div>
+            <label for="departure_airport">Departure Airport:</label>
+            <select id="departure_airport" name="departure_airport">
+                <option value="">Select an airport</option>
+                {% for airport in airports %}
+                <option value="{{ airport[0] }}">{{ airport[0] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="arrival_airport">Arrival Airport:</label>
+            <select id="arrival_airport" name="arrival_airport">
+                <option value="">Select an airport</option>
+                {% for airport in airports %}
+                <option value="{{ airport[1] }}">{{ airport[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="departure_time">Departure Date:</label>
+            <input type="date" id="departure_time" name="departure_time">
+        </div>
+        <input type="submit" value="Search">
+        <button type="button" id='back' onclick="window.location.href='/back';">Back</button>
+    </form>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Flight Number</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Airline Name</th>
+                <th>Airplane ID</th>
+                <th>Departure Airport</th>
+                <th>Arrival Airport</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for flight in flights %}
+            <tr>
+                <td>{{ flight[0] }}</td>
+                <td>{{ flight[1].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ flight[2].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ flight[3] }}</td>
+                <td>{{ flight[4] }}</td>
+                <td>{{ flight[5] }}</td>
+                <td>{{ flight[6] }}</td>
+                <td>{{ flight[7] }}</td>
+                <td>{{ flight[8] }}</td>
+                <td>
+                    {% if flight[0] | check_if_purchased(flight[0]) %}
+                    <button class="purchased-button" >Purchased</button>
+                    {% elif flight[0] | check_if_full() %}
+                    <button class="purchased-button" >LIMIT</button>
+                    {% else %}
+                    <button id="purchase-button" onclick="purchaseTicket('{{ flight[0] }}')">Purchase</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+<script>
+    function purchaseTicket(flightNum) {
+        fetch('/customer_purchase_ticket', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ flight_number: flightNum })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Ticket purchased successfully!');
+                location.reload(); // Reload the page to update the ticket status
+            } else {
+                alert('Failed to purchase ticket: ' + data.error);
+            }
+        })
+    }
+
+    document.querySelectorAll('.purchased-button').forEach(button => {
+        button.addEventListener('mouseover', function() {
+            this.classList.add('shake-animation');
+            this.addEventListener('animationend', () => {
+            this.classList.remove('shake-animation');
+            });
+        });
+
+        button.addEventListener('mousedown', function() {
+            this.classList.add('shake-twice-animation');
+            this.addEventListener('animationend', () => {
+            this.classList.remove('shake-twice-animation');
+            });
+        });
+        });
+
+
+    </script>    
+</html>

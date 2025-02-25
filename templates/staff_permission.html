@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grant Permissions</title>
+    <style>   
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        background-color: #F5F5F5;
+        color: #333;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    button {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        font-weight: bold;
+        padding: 15px;
+        border: none;
+        border-radius: 4px;
+        width: 10%;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    button:hover {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px);
+    }
+
+    select {
+        -webkit-appearance: none;  /* 移除默认的下拉箭头 */
+        -moz-appearance: none;
+        appearance: none;
+        font-size: 16px;
+        padding: 8px 10px;
+        border: 2px solid #888b8f;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background-color: #f8f9fa;  /* 浅灰色背景 */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        color: #333;
+        outline: none;
+        transition: all 0.3s;
+        width: 100%; /* 根据需要调整宽度 */
+        cursor: pointer;
+        text-align-last: center; /* 使选项文字居中 */
+        margin-top: 20px;
+    }
+
+    select:hover {
+        border-color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    select:focus {
+        border-color: #003875;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .permissionDisplay {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #eef;
+        border-left: 5px solid #55f;
+        display: flex;            /* 使用 flexbox 布局 */
+        justify-content: center;  /* 水平居中 */
+        align-items: center;      /* 垂直居中 */
+        height: 50px;             /* 给定一个固定高度 */
+        text-align: center;  
+    }
+
+    /* 下拉选项的额外样式 */
+    option {
+        padding: 8px;
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+    }
+
+    option:hover {
+        background: linear-gradient(145deg, #0056b3, #003875);
+    }
+
+    button[type="submit"] {
+        background: linear-gradient(145deg, #ff0000, #b30000);
+        color: white;
+        font-weight: bold;
+        padding: 15px;
+        border: none;
+        border-radius: 4px;
+        width: 100%;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        margin-top: 20px;
+    }
+    button[type="submit"]:hover {
+        background: linear-gradient(145deg, #b30000, #750000);
+        transform: translateY(-2px);
+    }
+
+    form {
+        margin-top: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        width: 20%;
+        align-items: center;
+    }
+
+    </style>
+
+</head>
+<body>
+    {% if message %}
+        <script>
+            alert("{{ message }}");
+        </script>
+    {% endif %}
+    <h1>Grant Permissions</h1>
+    <button type="button" onclick="window.location.href='/back';">Back</button>
+
+    <form id="permissionForm" action="/staff_permission" method="POST">
+        <select id="select" name="airline_staff" onchange="showPermissions()">
+            <!-- Option elements will be populated here by JavaScript -->
+        </select>
+        <div id="permissionDisplay">
+            <!-- Permission details will be displayed here -->
+        </div>
+
+        <select id="operatorSelect" name="is_operator">
+            <option value="" disabled selected hidden>Grant Operator</option>
+            <option value=1>Yes</option>
+            <option value=0>No</option>
+        </select>
+
+        <select id="adminSelect" name="is_admin">
+            <option value="" disabled selected hidden>Grant Admin</option>
+            <option value=1>Yes</option>
+            <option value=0>No</option>
+        </select>
+
+        <button type="submit">Commit</button>
+    </form>
+
+
+    <script>
+        // 假设这是从页面传入的客户数据
+        var staffs = {{ staffs | tojson | safe }};
+        // 初始化下拉菜单
+        function populateSelect() {
+            const select = document.getElementById('select');
+            // Create and add the default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.textContent = "Select a staff";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            select.appendChild(defaultOption);
+
+            const uniqueCustomers = [...new Set(staffs.map(item => item[0]))]; // 获取唯一客户名列表
+
+            uniqueCustomers.forEach(staff => {
+                const option = document.createElement('option');
+                option.value = staff;
+                option.textContent = staff;
+                select.appendChild(option);
+            });
+        }
+
+        function showPermissions() {
+            const selectedStaff = document.getElementById('select').value;
+            const permissionDisplay = document.getElementById('permissionDisplay');
+            
+            // 查找选中的员工的权限信息
+            const staffInfo = staffs.find(staff => staff[0] === selectedStaff);
+            
+            // 如果找到了员工，显示其权限
+            if (staffInfo) {
+                const permissions = `Operator: ${staffInfo[1] ? 'Yes' : 'No'}, Admin: ${staffInfo[2] ? 'Yes' : 'No'}`;
+                permissionDisplay.textContent = permissions;
+            } else {
+                permissionDisplay.textContent = 'No permissions found for ' + selectedStaff;
+            }
+        }
+
+        // 页面加载完毕后，填充选择框
+        window.onload = populateSelect;
+    </script>
+
+</body>
+</html>

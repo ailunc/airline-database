@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>   
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        background-color: #ffffff;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .cards-container {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .card {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        background: #fff;
+        border-radius: 8px;
+        margin: 10px;
+        padding: 20px;
+        text-align: center;
+        flex-basis: 30%;
+        transition: transform 0.3s, box-shadow 0.3s;
+        margin-top: 20px;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    .container {
+        padding: 16px;
+    }
+
+    button {
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+        font-weight: bold;
+        padding: 15px;
+        border: none;
+        border-radius: 4px;
+        width: 10%;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    button:hover {
+        background: linear-gradient(145deg, #0056b3, #003875);
+        transform: translateY(-2px);
+    }
+
+    #customerSelect {
+        -webkit-appearance: none;  /* 移除默认的下拉箭头 */
+        -moz-appearance: none;
+        appearance: none;
+        font-size: 16px;
+        padding: 8px 10px;
+        border: 2px solid #888b8f;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background-color: #f8f9fa;  /* 浅灰色背景 */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        color: #333;
+        outline: none;
+        transition: all 0.3s;
+        width: 30%; /* 根据需要调整宽度 */
+        cursor: pointer;
+        text-align-last: center; /* 使选项文字居中 */
+        margin-top: 20px;
+    }
+
+    #customerSelect:hover {
+        border-color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    #customerSelect:focus {
+        border-color: #003875;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* 下拉选项的额外样式 */
+    option {
+        padding: 8px;
+        background: linear-gradient(145deg, #007bff, #0056b3);
+        color: white;
+    }
+
+    option:hover {
+        background: linear-gradient(145deg, #0056b3, #003875);
+    }
+
+    ul#flightNumberList {
+        list-style-type: none; /* 移除列表点 */
+        padding: 0;
+    }
+    ul#flightNumberList li {
+        padding: 8px;
+        background-color: #f0f0f0;
+        margin-top: 5px;
+        border-radius: 4px;
+    }
+    </style>
+
+</head>
+<body>
+    <h1>Customers</h1>
+    <button type="button" onclick="window.location.href='/back';">Back</button>
+    <div class="cards-container">
+        <div class="card">
+            <div class="container">
+                <h4><b>Top Customer (last year)</b></h4>
+                <p>{{ top_customer[0] }}: {{ top_customer[1] }} sales</p>
+            </div>
+        </div>
+    </div>
+
+    <select id="customerSelect" onchange="showFlightNums()">
+        <!-- Option elements will be populated here by JavaScript -->
+    </select>
+    <ul id="flightNumberList">
+        <!-- Flight numbers will be populated here by JavaScript -->
+    </ul>
+
+    <script>
+        // 假设这是从页面传入的客户数据
+        var customers = {{ customers | tojson | safe }};
+        // 初始化下拉菜单
+        function populateSelect() {
+            const select = document.getElementById('customerSelect');
+            // Create and add the default option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = "";
+            defaultOption.textContent = "Select a customer";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            select.appendChild(defaultOption);
+
+            const uniqueCustomers = [...new Set(customers.map(item => item[0]))]; // 获取唯一客户名列表
+
+            uniqueCustomers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer;
+                option.textContent = customer;
+                select.appendChild(option);
+            });
+        }
+
+        // 显示选中客户的所有航班号
+        function showFlightNums() {
+            const selectedCustomer = document.getElementById('customerSelect').value;
+            const flightList = document.getElementById('flightNumberList');
+            flightList.innerHTML = ''; // 清空现有列表
+
+            const flights = customers.filter(item => item[0] === selectedCustomer);
+            flights.forEach(flight => {
+                const listItem = document.createElement('li');
+                listItem.textContent = 'Flight Number: ' + flight[1];
+                flightList.appendChild(listItem);
+            });
+        }
+
+        // 页面加载完毕后，填充选择框
+        window.onload = populateSelect;
+    </script>
+
+</body>
+</html>

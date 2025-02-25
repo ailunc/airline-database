@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Airport</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 350px;
+            display: block;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+        }
+        input[type="submit"], button {
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            font-weight: bold;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        input[type="submit"]:hover, button:hover {
+            background: linear-gradient(145deg, #0056b3, #003875);
+            transform: translateY(-2px);
+        }
+        input, select {
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    {% if message %}
+        <script>
+            alert("{{ message }}");
+        </script>
+    {% endif %}
+    <h1>Add Airport</h1>
+    <form action="/staff_airport" method="POST">
+        <label for="name">Airport Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required>
+
+        <input type="submit" value="Add Airport">
+        <button type="button" onclick="window.location.href='/back';">Back</button>
+    </form>
+</body>
+</html>
